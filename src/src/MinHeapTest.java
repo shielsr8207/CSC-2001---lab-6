@@ -44,13 +44,58 @@ public class MinHeapTest {
         assertArrayEquals(new int[]{42}, h.toArray());
     }
 
+
+
     // TODO: add your own tests. At a minimum, cover:
+    @Test
+    void negativeCapacityThrows() {
+        assertThrows(IllegalArgumentException.class, () -> new MinHeap(-5));
+    }
+
+    @Test
+    void growFromCapacityOne() {
+        MinHeap h = new MinHeap(1);
+        h.insert(5);
+        h.insert(3);
+        h.insert(8);
+        h.insert(1);
+        h.insert(7);
+        assertEquals(5, h.size());
+        assertArrayEquals(new int[]{1, 3, 8, 5, 7}, h.toArray());
+    }
+
+    @Test
+    void buildFromOneValue() {
+        MinHeap h = new MinHeap(new int[]{7});
+        assertEquals(7, h.peek());
+        assertArrayEquals(new int[]{7}, h.toArray());
+    }
+
+    @Test
+    void buildDoesNotChangeInput() {
+        int[] input = {9, 4, 7, 1, 5};
+        new MinHeap(input);
+        assertArrayEquals(new int[]{9, 4, 7, 1, 5}, input);
+    }
+
     //   - removeMin() on an empty heap throws NoSuchElementException
     @Test
     void removeOnEmptyHeap() {
         MinHeap h = new MinHeap(1);
         assertThrows(NoSuchElementException.class, () -> h.removeMin());
     }
+
+    @Test
+    void removeAndPeekThrowAfterEmptying() {
+        MinHeap h = new MinHeap();
+        h.insert(4);
+        h.insert(2);
+        h.removeMin();
+        h.removeMin();
+        assertThrows(NoSuchElementException.class, () -> h.removeMin());
+        assertThrows(NoSuchElementException.class, () -> h.peek());
+    }
+
     //   - new MinHeap(0) throws IllegalArgumentException
     @Test
     void newEmptyHeapIsEmpty() {
@@ -153,6 +198,14 @@ public class MinHeapTest {
         assertArrayEquals(new int[]{1, 3 , 2}, h2.toArray());
 
     }
+
+    @Test
+    void buildFromEmptyArray() {
+        MinHeap h = new MinHeap(new int[]{});
+        assertTrue(h.isEmpty());
+        assertArrayEquals(new int[]{}, h.toArray());
+    }
+
 
     //   - a heap built from an array still supports insert (it must grow) and removeMin
     @Test
